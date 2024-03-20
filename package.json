@@ -7,8 +7,13 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "iClasser",
   "license": "ISC",
+  "homepage": "https://github.com/iClasser/iclasser-cli",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iClasser/iclasser-cli"
+  },
   "dependencies": {
     "fs-extra": "^11.2.0",
     "inquirer": "^9.2.16",
