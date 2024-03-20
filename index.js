@@ -4,13 +4,25 @@ import simpleGit from 'simple-git';
 import inquirer from 'inquirer';
 import fs from 'fs-extra';
 import chalk from 'chalk';
-let packageJson = fs.readJsonSync('./package.json');
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Convert file URL to path for __dirname compatibility in ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Read package.json to get the current version of the app
+const packageJsonPath = path.join(__dirname, 'package.json');
+const packageJson = await fs.readJson(packageJsonPath);
 const appVersion = packageJson.version;
+
 const constants = {
     TEACH_URL: 'https://www.iclasser.com/teach/apps',
     REPO_URL: 'https://github.com/iClasser/examples.git'
 };
-const run = async () => {
+
+// Function to handle the "create" command
+const handleCreate = async () => {
     console.log('Welcome to the iclasser-cli!');
     console.log(`v${appVersion}`, '\n');
     console.log('This tool will help you get started with your iclasser app.');
@@ -57,9 +69,8 @@ const run = async () => {
 
     const appNameDashed = answers.appName.toLowerCase().replace(/ /g, '-');
 
-    
     const git = simpleGit();
-    const repoUrl = constants.REPO_URL; // Replace with your repo URL
+    const repoUrl = constants.REPO_URL; // Use your repo URL
     const cloneDir = `./${appNameDashed}`;
 
     console.log(`Cloning the repository into ${cloneDir}...`);
@@ -67,10 +78,9 @@ const run = async () => {
 
     console.log('Updating package.json...');
     const packagePath = `${cloneDir}/package.json`;
-    const packageJson = await fs.readJson(packagePath);
-    packageJson.name = appNameDashed;
-    await fs.writeJson(packagePath, packageJson, { spaces: 2 });
-
+    const projectPackageJson = await fs.readJson(packagePath);
+    projectPackageJson.name = appNameDashed;
+    await fs.writeJson(packagePath, projectPackageJson, { spaces: 2 });
 
     console.log('Your app is ready, you should:');
     console.log(`1. cd ${appNameDashed}`);
@@ -80,4 +90,32 @@ const run = async () => {
     console.log('\nDone!');
 };
 
-run().catch(console.error);
+// Function to display the version
+const showVersion = () => {
+    console.log(`iclasser-cli version: ${appVersion}`);
+};
+
+// Main function to parse command-line arguments and invoke appropriate functions
+const main = () => {
+    const args = process.argv.slice(2);
+
+    if (args.length === 0) {
+        console.log('No command provided. Use "create" to create a new project or "-v" to see the version.');
+        return;
+    }
+
+    switch (args[0]) {
+        case 'create':
+            handleCreate().catch(console.error);
+            break;
+        case 'version':
+        case '-v':
+        case '-vv':
+            showVersion();
+            break;
+        default:
+            console.log(`Unknown command: ${args[0]}. Use "create" to create a new project or "-v" to see the version.`);
+    }
+};
+
+main();
