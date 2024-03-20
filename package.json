@@ -1,6 +1,6 @@
 {
   "name": "iclasser-cli",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "type": "module",
   "description": "iClasser command line tool",
   "main": "index.js",

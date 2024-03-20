@@ -4,13 +4,15 @@ import simpleGit from 'simple-git';
 import inquirer from 'inquirer';
 import fs from 'fs-extra';
 import chalk from 'chalk';
+let packageJson = fs.readJsonSync('./package.json');
+const appVersion = packageJson.version;
 const constants = {
     TEACH_URL: 'https://www.iclasser.com/teach/apps',
     REPO_URL: 'https://github.com/iClasser/examples.git'
 };
 const run = async () => {
     console.log('Welcome to the iclasser-cli!');
-    console.log('v1.0.0\n');
+    console.log(`v${appVersion}`, '\n');
     console.log('This tool will help you get started with your iclasser app.');
     console.log(`You will need your app id from your iclasser.com apps dashboard.`);
     console.log(`You can find it here: ${chalk.green(constants.TEACH_URL)}\n`);
